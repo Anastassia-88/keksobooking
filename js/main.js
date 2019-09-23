@@ -105,8 +105,8 @@ var renderMapPin = function (accommodation) {
 
   mapPinElement.querySelector('img').src = accommodation.author.avatar;
   mapPinElement.querySelector('img').alt = accommodation.offer.description;
-  mapPinElement.style.left = (accommodation.location.x + PIN_WIDTH / 2) + 'px';
-  mapPinElement.style.top = (accommodation.location.y + PIN_HEIGHT) + 'px';
+  mapPinElement.style.left = (accommodation.location.x - PIN_WIDTH / 2) + 'px';
+  mapPinElement.style.top = (accommodation.location.y - PIN_HEIGHT) + 'px';
 
   return mapPinElement;
 };
