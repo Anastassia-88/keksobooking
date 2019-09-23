@@ -170,6 +170,4 @@ insertMapPins(accommodations);
 
 
 // Добавление в разметку карточки первого объявления
-var fragment = document.createDocumentFragment();
-fragment.appendChild(renderMapCard(accommodations[0]));
-map.insertBefore(fragment, map.querySelector('.map__filters-container'));
+map.insertBefore(renderMapCard(accommodations[0]), map.querySelector('.map__filters-container'));
