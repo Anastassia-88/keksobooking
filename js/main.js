@@ -23,10 +23,17 @@ var ACCOMMODATIONS_AMOUNT = 8;
 
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 87;
+
+var adForm = document.querySelector('.ad-form');
+var filterForm = document.querySelector('.map__filters');
+var addressInput = adForm.querySelector('input[name=address]');
+
+var mapPinMain = document.querySelector('.map__pin--main');
 
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
 
 var mapPinTemplate = document.querySelector('#pin')
   .content
@@ -37,6 +44,47 @@ var mapCardTemplate = document.querySelector('#card')
   .querySelector('.map__card');
 
 var mapPins = map.querySelector('.map__pins');
+
+
+// Добавляет или удаляет аттрибут disabled у элементов формы
+var switchFormElement = function (form, isDisabled) {
+  var elems = form.elements;
+  for (var i = 0; i < elems.length; i++) {
+    elems[i].disabled = isDisabled;
+  }
+};
+
+// Начальный (не активный) режим страницы
+switchFormElement(filterForm, true);
+switchFormElement(adForm, true);
+
+
+// Активный режим страницы
+var setActiveMode = function () {
+  if (map.classList.contains('map--faded')) {
+    switchFormElement(filterForm, false);
+    switchFormElement(adForm, false);
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+    renderMapPins(accommodations);
+    renderCard(accommodations[0]);
+  }
+};
+
+var getAddress = function () {
+  var pinX = mapPinMain.style.left;
+  var pinY = mapPinMain.style.top;
+  var addressX = +pinX.substr(0, pinX.length - 2) + MAIN_PIN_WIDTH / 2;
+  var addressY = +pinY.substr(0, pinY.length - 2) + MAIN_PIN_HEIGHT;
+  addressInput.value = Math.floor(addressX) + ', ' + Math.floor(addressY);
+};
+
+
+// Переводим страницу Кексобукинга в активный режим
+mapPinMain.addEventListener('mousedown', function () {
+  setActiveMode();
+  getAddress();
+});
 
 
 // Getting a random integer between two values, inclusive
@@ -113,7 +161,7 @@ var renderMapPin = function (accommodation) {
 
 // Функция заполнения блока DOM-элементами на основе массива JS-объектов
 // Метки на карте
-var insertMapPins = function (accommodations) {
+var renderMapPins = function (accommodations) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < accommodations.length; i++) {
     fragment.appendChild(renderMapPin(accommodations[i]));
@@ -122,7 +170,11 @@ var insertMapPins = function (accommodations) {
 };
 
 
-// Функция создания DOM-элемента карточки объявленияна основе JS-объекта
+// Массив с объявлениями
+var accommodations = createAccommodationsArray(ACCOMMODATIONS_AMOUNT);
+
+
+// Функция создания DOM-элемента карточки объявления на основе JS-объекта
 var renderMapCard = function (accommodation) {
   var mapCardElement = mapCardTemplate.cloneNode(true);
 
@@ -165,9 +217,44 @@ var renderMapCard = function (accommodation) {
 };
 
 
-var accommodations = createAccommodationsArray(ACCOMMODATIONS_AMOUNT);
-insertMapPins(accommodations);
+// Добавляет в разметку карточку объявления
+var renderCard = function (accommodation) {
+  map.insertBefore(renderMapCard(accommodation), map.querySelector('.map__filters-container'));
+};
+
+// Валидация
+var roomsNumberSelect = adForm.querySelector('#room_number');
+var guestsNumberSelect = adForm.querySelector('#capacity');
+
+var getSelectedOption = function (select) {
+  return select.options[select.selectedIndex].value;
+};
 
 
-// Добавление в разметку карточки первого объявления
-map.insertBefore(renderMapCard(accommodations[0]), map.querySelector('.map__filters-container'));
+var customValidation = function () {
+  var guestsNumberOptions = guestsNumberSelect.querySelectorAll('option');
+  var roomsNumber = +getSelectedOption(roomsNumberSelect);
+
+  for (var i = 0; i < guestsNumberOptions.length; i++) {
+    var guestsNumber = guestsNumberOptions[i];
+
+    if (roomsNumber >= +guestsNumber.value && +guestsNumber.value !== 0) {
+      guestsNumber.disabled = false;
+    } else if (roomsNumber === 100 && +guestsNumber.value === 0) {
+      guestsNumber.disabled = false;
+      guestsNumber.selected = true;
+    } else {
+      guestsNumber.disabled = true;
+      guestsNumber.selected = false;
+    }
+  }
+};
+
+roomsNumberSelect.addEventListener('change', function () {
+  customValidation();
+});
+
+guestsNumberSelect.addEventListener('change', function () {
+  customValidation();
+});
+
