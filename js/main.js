@@ -4,10 +4,22 @@ var ACCOMMODATION_CHECKIN = ['12:00', '13:00', '14:00'];
 var ACCOMMODATION_CHECKOUT = ['12:00', '13:00', '14:00'];
 var ACCOMMODATION_TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var ACCOMMODATION_TYPE_NAME = {
-  palace: 'Дворец ',
-  flat: 'Квартира',
-  house: 'Дом',
-  bungalo: 'Бунгало'
+  'palace': {
+    'text': 'Дворец',
+    'minPrice': 10000,
+  },
+  'house': {
+    'text': 'Дом',
+    'minPrice': 5000,
+  },
+  'flat': {
+    'text': 'Квартира',
+    'minPrice': 1000,
+  },
+  'bungalo': {
+    'text': 'Бунгало',
+    'minPrice': 0,
+  }
 };
 var ACCOMMODATION_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var ACCOMMODATION_PHOTOS = [
@@ -203,7 +215,7 @@ var renderMapCard = function (accommodation) {
   mapCardElement.querySelector('.popup__title').textContent = accommodation.offer.title;
   mapCardElement.querySelector('.popup__text--address').textContent = accommodation.offer.address;
   mapCardElement.querySelector('.popup__text--price').textContent = accommodation.offer.price + '₽/ночь';
-  mapCardElement.querySelector('.popup__type').textContent = ACCOMMODATION_TYPE_NAME[accommodation.offer.type];
+  mapCardElement.querySelector('.popup__type').textContent = ACCOMMODATION_TYPE_NAME[accommodation.offer.type].text;
   mapCardElement.querySelector('.popup__text--capacity').textContent = accommodation.offer.rooms + ' комнаты для ' +
     accommodation.offer.guests + ' гостей';
   mapCardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + accommodation.offer.checkin +
@@ -225,13 +237,17 @@ var renderCard = function (accommodation) {
 // Валидация
 var roomsNumberSelect = adForm.querySelector('#room_number');
 var guestsNumberSelect = adForm.querySelector('#capacity');
+var timeInSelect = adForm.querySelector('#timein');
+var timeOutSelect = adForm.querySelector('#timeout');
+var priceInput = adForm.querySelector('#price');
+var typeSelect = adForm.querySelector('#type');
 
 var getSelectedOption = function (select) {
   return select.options[select.selectedIndex].value;
 };
 
 
-var customValidation = function () {
+var checkCapacity = function () {
   var guestsNumberOptions = guestsNumberSelect.querySelectorAll('option');
   var roomsNumber = +getSelectedOption(roomsNumberSelect);
 
@@ -251,10 +267,17 @@ var customValidation = function () {
 };
 
 roomsNumberSelect.addEventListener('change', function () {
-  customValidation();
+  checkCapacity();
 });
 
 guestsNumberSelect.addEventListener('change', function () {
-  customValidation();
+  checkCapacity();
+});
+
+// Валидация минимального значение поля «Цена за ночь» в зависимости от типа жилья
+typeSelect.addEventListener('change', function () {
+  var key = getSelectedOption(typeSelect);
+  priceInput.min = ACCOMMODATION_TYPE_NAME[key].minPrice;
+  priceInput.placeholder = ACCOMMODATION_TYPE_NAME[key].minPrice;
 });
 
