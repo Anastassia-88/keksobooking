@@ -32,7 +32,7 @@ var checkCapacity = function () {
   for (var i = 0; i < guestsNumberOptions.length; i++) {
     var guestsNumber = guestsNumberOptions[i];
 
-    if (roomsNumber >= parseInt(guestsNumber.value) && parseInt(guestsNumber.value !== 0)) {
+    if (roomsNumber >= parseInt(guestsNumber.value) && roomsNumber !== 100 && parseInt(guestsNumber.value !== 0)) {
       guestsNumber.disabled = false;
     } else if (roomsNumber === 100 && parseInt(guestsNumber.value === 0)) {
       guestsNumber.disabled = false;
