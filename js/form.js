@@ -13,13 +13,13 @@ var switchFormElement = function (form, isDisabled) {
 var getAddress = function () {
   var pinX = mapPinMain.style.left;
   var pinY = mapPinMain.style.top;
-  var addressX = +pinX.substr(0, pinX.length - 2) + MAIN_PIN_WIDTH / 2;
+  var addressX = parseInt(pinX, 10) + MAIN_PIN_WIDTH / 2;
   var addressY;
 
   if (map.classList.contains('map--faded')) { // Inactive mode
-    addressY = +pinY.substr(0, pinY.length - 2) + MAIN_PIN_HEIGHT_INACTIVE / 2;
+    addressY = parseInt(pinY, 10) + MAIN_PIN_HEIGHT_INACTIVE / 2;
   } else { // Active mode
-    addressY = +pinY.substr(0, pinY.length - 2) + MAIN_PIN_HEIGHT_ACTIVE;
+    addressY = parseInt(pinY, 10) + MAIN_PIN_HEIGHT_ACTIVE;
   }
   addressInput.value = Math.floor(addressX) + ', ' + Math.floor(addressY);
 };
@@ -27,14 +27,14 @@ var getAddress = function () {
 // Checking capacity
 var checkCapacity = function () {
   var guestsNumberOptions = guestsNumberSelect.querySelectorAll('option');
-  var roomsNumber = +getSelectedOption(roomsNumberSelect);
+  var roomsNumber = parseInt(getSelectedOption(roomsNumberSelect));
 
   for (var i = 0; i < guestsNumberOptions.length; i++) {
     var guestsNumber = guestsNumberOptions[i];
 
-    if (roomsNumber >= +guestsNumber.value && +guestsNumber.value !== 0) {
+    if (roomsNumber >= parseInt(guestsNumber.value) && parseInt(guestsNumber.value !== 0)) {
       guestsNumber.disabled = false;
-    } else if (roomsNumber === 100 && +guestsNumber.value === 0) {
+    } else if (roomsNumber === 100 && parseInt(guestsNumber.value === 0)) {
       guestsNumber.disabled = false;
       guestsNumber.selected = true;
     } else {
