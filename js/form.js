@@ -27,14 +27,14 @@ var getAddress = function () {
 // Checking capacity
 var checkCapacity = function () {
   var guestsNumberOptions = guestsNumberSelect.querySelectorAll('option');
-  var roomsNumber = parseInt(getSelectedOption(roomsNumberSelect));
+  var roomsNumber = parseInt(getSelectedOption(roomsNumberSelect), 10);
 
   for (var i = 0; i < guestsNumberOptions.length; i++) {
     var guestsNumber = guestsNumberOptions[i];
 
-    if (roomsNumber >= parseInt(guestsNumber.value) && (roomsNumber !== 100) && parseInt(guestsNumber.value) !== 0) {
+    if (roomsNumber >= parseInt(guestsNumber.value, 10) && (roomsNumber !== 100) && parseInt(guestsNumber.value, 10) !== 0) {
       guestsNumber.disabled = false;
-    } else if (roomsNumber === 100 && parseInt(guestsNumber.value) === 0) {
+    } else if (roomsNumber === 100 && parseInt(guestsNumber.value, 10) === 0) {
       guestsNumber.disabled = false;
       guestsNumber.selected = true;
     } else {
