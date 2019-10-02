@@ -1,59 +1,41 @@
 'use strict';
 
-// Inactive (start) mode
-switchFormElement(filterForm, true);
-switchFormElement(adForm, true);
-getAddress();
+(function () {
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
 
-// Active mode
-var setActiveMode = function () {
-  if (map.classList.contains('map--faded')) {
-    switchFormElement(filterForm, false);
-    switchFormElement(adForm, false);
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-    renderPins(accommodations);
-  }
-};
+  var map = window.data.map;
+  var pinTemplate = document.querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
 
 
-// Переводим страницу Кексобукинга в активный режим
-mapPinMain.addEventListener('mousedown', function () {
-  setActiveMode();
-  getAddress();
-});
+  var renderPin = function (accommodation) {
+    var pin = pinTemplate.cloneNode(true);
+    pin.querySelector('img').src = accommodation.author.avatar;
+    pin.querySelector('img').alt = accommodation.offer.description;
+    pin.style.left = (accommodation.location.x - PIN_WIDTH / 2) + 'px';
+    pin.style.top = (accommodation.location.y - PIN_HEIGHT) + 'px';
 
-
-var renderPin = function (accommodation) {
-  var mapPin = pinTemplate.cloneNode(true);
-  mapPin.querySelector('img').src = accommodation.author.avatar;
-  mapPin.querySelector('img').alt = accommodation.offer.description;
-  mapPin.style.left = (accommodation.location.x - PIN_WIDTH / 2) + 'px';
-  mapPin.style.top = (accommodation.location.y - PIN_HEIGHT) + 'px';
-
-  mapPin.addEventListener('mousedown', function () {
-    deleteCard();
-    renderCard(accommodation);
-    document.addEventListener('keydown', onPopupEscPress);
-  });
-
-  mapPin.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
+    pin.addEventListener('mousedown', function () {
       deleteCard();
       renderCard(accommodation);
       document.addEventListener('keydown', onPopupEscPress);
-    }
-  });
+    });
 
-  return mapPin;
-};
+    pin.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ENTER_KEYCODE) {
+        deleteCard();
+        renderCard(accommodation);
+        document.addEventListener('keydown', onPopupEscPress);
+      }
+    });
+    return pin;
+  };
 
-// Функция заполнения блока DOM-элементами на основе массива JS-объектов
-// Метки на карте
-var renderPins = function (accommodations) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < accommodations.length; i++) {
-    fragment.appendChild(renderPin(accommodations[i]));
+  window.pin = {
+    renderPin: renderPin,
   }
-  mapPinsContainer.appendChild(fragment);
-};
+
+
+})();
