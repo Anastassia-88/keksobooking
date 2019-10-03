@@ -6,8 +6,6 @@
 
   var ACCOMMODATION_CHECKOUT = ['12:00', '13:00', '14:00'];
 
-  var ACCOMMODATION_TYPE = ['palace', 'flat', 'house', 'bungalo'];
-
   var ACCOMMODATION_TYPE_NAME = {
     'palace': {
       'text': 'Дворец',
@@ -55,7 +53,7 @@
         'offer': {
           title: 'title',
           price: 1,
-          type: window.util.getRandomItemFromArray(ACCOMMODATION_TYPE),
+          type: window.util.getRandomItemFromArray(Object.keys(ACCOMMODATION_TYPE_NAME)),
           rooms: i,
           guests: i,
           checkin: window.util.getRandomItemFromArray(ACCOMMODATION_CHECKIN),
@@ -82,5 +80,7 @@
 
   window.data = {
     accommodations: accommodations,
+    ACCOMMODATION_TYPE_NAME: ACCOMMODATION_TYPE_NAME,
+    ACCOMMODATION_FEATURES: ACCOMMODATION_FEATURES,
   };
 })();

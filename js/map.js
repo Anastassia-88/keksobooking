@@ -60,4 +60,8 @@
     getAddress();
   });
 
+
+  window.map = {
+    map: map,
+  };
 })();

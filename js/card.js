@@ -7,38 +7,33 @@
     .querySelector('.map__card');
 
 
-  // Delete previous card
   var deleteCard = function () {
-    var card = map.querySelector('.map__card');
+    var card = window.map.map.querySelector('.map__card');
     if (card) {
-      card.parentNode.removeChild(card);
+      card.remove();
       document.removeEventListener('keydown', onPopupEscPress);
     }
   };
 
 
-  // Escape
   var onPopupEscPress = function (evt) {
     window.util.isEscEvent(evt, deleteCard);
   };
 
 
-  // Render card
   var renderCard = function (accommodation) {
     var newCard = cardTemplate.cloneNode(true);
-
 
     var getFeatures = function (features) {
       var featuresContainer = newCard.querySelector('.popup__features');
       var featuresCollection = newCard.querySelectorAll('.popup__feature');
 
-      for (var i = 0; i < ACCOMMODATION_FEATURES.length; i++) {
-        if (!features.includes(ACCOMMODATION_FEATURES[i])) {
+      for (var i = 0; i < window.data.ACCOMMODATION_FEATURES.length; i++) {
+        if (!features.includes(window.data.ACCOMMODATION_FEATURES[i])) {
           featuresContainer.removeChild(featuresCollection[i]);
         }
       }
     };
-
 
     var getPhotos = function (photos) {
       var photoContainer = newCard.querySelector('.popup__photos');
@@ -56,7 +51,7 @@
     newCard.querySelector('.popup__title').textContent = accommodation.offer.title;
     newCard.querySelector('.popup__text--address').textContent = accommodation.offer.address;
     newCard.querySelector('.popup__text--price').textContent = accommodation.offer.price + '₽/ночь';
-    newCard.querySelector('.popup__type').textContent = ACCOMMODATION_TYPE_NAME[accommodation.offer.type].text;
+    newCard.querySelector('.popup__type').textContent = window.data.ACCOMMODATION_TYPE_NAME[accommodation.offer.type].text;
     newCard.querySelector('.popup__text--capacity').textContent = accommodation.offer.rooms + ' комнаты для ' +
       accommodation.offer.guests + ' гостей';
     newCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + accommodation.offer.checkin +
@@ -80,8 +75,13 @@
 
 
     // Insert card
-    map.insertBefore(newCard, map.querySelector('.map__filters-container'));
+    window.map.map.insertBefore(newCard, window.map.map.querySelector('.map__filters-container'));
   };
 
 
+  window.card = {
+    renderCard: renderCard,
+    onPopupEscPress: onPopupEscPress,
+    deleteCard: deleteCard,
+  };
 })();

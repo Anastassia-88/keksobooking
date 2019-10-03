@@ -12,7 +12,7 @@
   var timeInSelect = adForm.querySelector('#timein');
   var timeOutSelect = adForm.querySelector('#timeout');
   var addressInput = adForm.querySelector('input[name=address]');
-  
+
 
   // Checking capacity
   var checkCapacity = function () {
@@ -46,8 +46,8 @@
   // Connecting accomodation type and min price
   typeSelect.addEventListener('change', function () {
     var key = window.util.getSelectedOption(typeSelect);
-    priceInput.min = ACCOMMODATION_TYPE_NAME[key].minPrice;
-    priceInput.placeholder = ACCOMMODATION_TYPE_NAME[key].minPrice;
+    priceInput.min = window.data.ACCOMMODATION_TYPE_NAME[key].minPrice;
+    priceInput.placeholder = window.data.ACCOMMODATION_TYPE_NAME[key].minPrice;
   });
 
 
