@@ -2,8 +2,8 @@
 
 (function () {
 
-  var map = document.querySelector('.map');
-  var mapPinMain = map.querySelector('.map__pin--main');
+  var map = window.data.map;
+  var mainPin = map.querySelector('.map__pin--main');
   var mapPinsContainer = map.querySelector('.map__pins');
 
   var MAIN_PIN_WIDTH = 65;
@@ -23,8 +23,8 @@
 
   // Getting address
   var getAddress = function () {
-    var pinX = mapPinMain.style.left;
-    var pinY = mapPinMain.style.top;
+    var pinX = mainPin.style.left;
+    var pinY = mainPin.style.top;
     var addressX = parseInt(pinX, 10) + MAIN_PIN_WIDTH / 2;
     var addressY;
 
@@ -54,14 +54,54 @@
   };
 
 
-  // Starting active mode
-  mapPinMain.addEventListener('mousedown', function () {
+  // Moving the main pin
+  mainPin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
     setActiveMode();
-    getAddress();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      var endCoords = {
+        x: mainPin.offsetLeft - shift.x,
+        y: mainPin.offsetTop - shift.y
+      };
+
+      if ((endCoords.x >= window.data.X_MIN) && (endCoords.x <= window.data.X_MAX - MAIN_PIN_WIDTH)) {
+        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      }
+
+      if ((endCoords.y >= window.data.Y_MIN) && (endCoords.y <= window.data.Y_MAX)) {
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      }
+
+      getAddress();
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 
-
-  window.map = {
-    map: map,
-  };
 })();

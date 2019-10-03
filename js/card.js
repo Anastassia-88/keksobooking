@@ -6,9 +6,11 @@
     .content
     .querySelector('.map__card');
 
+  var map = window.data.map;
+
 
   var deleteCard = function () {
-    var card = window.map.map.querySelector('.map__card');
+    var card = map.querySelector('.map__card');
     if (card) {
       card.remove();
       document.removeEventListener('keydown', onPopupEscPress);
@@ -75,7 +77,7 @@
 
 
     // Insert card
-    window.map.map.insertBefore(newCard, window.map.map.querySelector('.map__filters-container'));
+    map.insertBefore(newCard, map.querySelector('.map__filters-container'));
   };
 
 
