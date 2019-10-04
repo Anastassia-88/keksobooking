@@ -86,7 +86,7 @@
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
 
-      if ((endCoords.y >= window.data.Y_MIN) && (endCoords.y <= window.data.Y_MAX)) {
+      if ((endCoords.y >= window.data.Y_MIN - MAIN_PIN_HEIGHT_ACTIVE) && (endCoords.y <= window.data.Y_MAX - MAIN_PIN_HEIGHT_ACTIVE)) {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
 
