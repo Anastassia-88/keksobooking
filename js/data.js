@@ -2,6 +2,8 @@
 
 (function () {
 
+  var map = document.querySelector('.map');
+
   var ACCOMMODATION_CHECKIN = ['12:00', '13:00', '14:00'];
 
   var ACCOMMODATION_CHECKOUT = ['12:00', '13:00', '14:00'];
@@ -33,10 +35,11 @@
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
 
-  var ACCOMMODATION_X_MIN = 0;
-  var ACCOMMODATION_X_MAX = 1200;
-  var ACCOMMODATION_Y_MIN = 130;
-  var ACCOMMODATION_Y_MAX = 630;
+  var X_MIN = 0;
+  var X_MAX = 1200;
+  var Y_MIN = 130;
+  var Y_MAX = 630;
+
   var ACCOMMODATIONS_AMOUNT = 8;
 
 
@@ -64,8 +67,8 @@
         },
 
         'location': {
-          x: window.util.getRandomIntInclusive(ACCOMMODATION_X_MIN, ACCOMMODATION_X_MAX),
-          y: window.util.getRandomIntInclusive(ACCOMMODATION_Y_MIN, ACCOMMODATION_Y_MAX)
+          x: window.util.getRandomIntInclusive(X_MIN, X_MAX),
+          y: window.util.getRandomIntInclusive(Y_MIN, Y_MAX)
         }
       };
       accommodation.offer.address = accommodation.location.x + ', ' + accommodation.location.y;
@@ -82,5 +85,10 @@
     accommodations: accommodations,
     ACCOMMODATION_TYPE_NAME: ACCOMMODATION_TYPE_NAME,
     ACCOMMODATION_FEATURES: ACCOMMODATION_FEATURES,
+    map: map,
+    X_MIN: 0,
+    X_MAX: 1200,
+    Y_MIN: 130,
+    Y_MAX: 630,
   };
 })();
