@@ -10,18 +10,21 @@
   var MAIN_PIN_HEIGHT_INACTIVE = 65;
   var MAIN_PIN_HEIGHT_ACTIVE = 87;
 
+  var METHOD_LOAD = 'GET';
+  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
 
-  // Render pins
+
   var renderPins = function (accommodations) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < accommodations.length; i++) {
-      fragment.appendChild(window.pin.renderPin(accommodations[i]));
+      if (accommodations[i].offer) {
+        fragment.appendChild(window.pin.createPin(accommodations[i]));
+      }
     }
     mapPinsContainer.appendChild(fragment);
   };
 
 
-  // Getting address
   var getAddress = function () {
     var pinX = mainPin.style.left;
     var pinY = mainPin.style.top;
@@ -49,7 +52,7 @@
       window.util.switchFormElement(window.form.adForm, false);
       map.classList.remove('map--faded');
       window.form.adForm.classList.remove('ad-form--disabled');
-      renderPins(window.data.accommodations);
+      window.backend.ajax(renderPins, window.backend.onError, METHOD_LOAD, URL_LOAD);
     }
   };
 

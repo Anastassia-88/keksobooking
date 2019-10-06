@@ -4,11 +4,9 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
-  var pinTemplate = document.querySelector('#pin')
-    .content
-    .querySelector('.map__pin');
+  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  var renderPin = function (accommodation) {
+  var createPin = function (accommodation) {
     var pin = pinTemplate.cloneNode(true);
     pin.querySelector('img').src = accommodation.author.avatar;
     pin.querySelector('img').alt = accommodation.offer.description;
@@ -32,7 +30,7 @@
   };
 
   window.pin = {
-    renderPin: renderPin,
+    createPin: createPin,
   };
 
 
