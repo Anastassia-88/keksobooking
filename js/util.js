@@ -49,7 +49,6 @@
     }
   };
 
-
   window.util = {
     getRandomIntInclusive: getRandomIntInclusive,
     getRandomItemFromArray: getRandomItemFromArray,

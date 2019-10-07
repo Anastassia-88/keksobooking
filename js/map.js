@@ -10,18 +10,28 @@
   var MAIN_PIN_HEIGHT_INACTIVE = 65;
   var MAIN_PIN_HEIGHT_ACTIVE = 87;
 
-  var METHOD_LOAD = 'GET';
-  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+  var METHOD_DOWNLOAD = 'GET';
+  var URL_DOWNLOAD = 'https://js.dump.academy/keksobooking/data';
+
+  var ACCOMMODATIONS_AMOUNT = 5;
 
 
   var renderPins = function (accommodations) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < accommodations.length; i++) {
+    for (var i = 0; i < ACCOMMODATIONS_AMOUNT; i++) {
       if (accommodations[i].offer) {
         fragment.appendChild(window.pin.createPin(accommodations[i]));
       }
     }
     mapPinsContainer.appendChild(fragment);
+  };
+
+
+  var deletePins = function () {
+    var pins = mapPinsContainer.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
 
@@ -40,19 +50,30 @@
   };
 
 
-  // Inactive (start) mode
-  window.util.switchFormElement(window.form.filterForm, true);
-  window.util.switchFormElement(window.form.adForm, true);
-  getAddress();
+  var setInactiveMode = function () {
+    window.form.filterForm.reset();
+    window.form.adForm.reset();
+    //window.card.deleteCard();
+    deletePins();
+    //mainPin.style.left = '';
+    //mainPin.style.top = '';
+    window.util.switchFormElement(window.form.filterForm, true);
+    window.util.switchFormElement(window.form.adForm, true);
+    map.classList.add('map--faded');
+    window.form.adForm.classList.add('ad-form--disabled');
+    getAddress();
 
-  // Active mode
+  };
+
+  setInactiveMode();
+
   var setActiveMode = function () {
     if (map.classList.contains('map--faded')) {
       window.util.switchFormElement(window.form.filterForm, false);
       window.util.switchFormElement(window.form.adForm, false);
       map.classList.remove('map--faded');
       window.form.adForm.classList.remove('ad-form--disabled');
-      window.backend.ajax(renderPins, window.backend.onError, METHOD_LOAD, URL_LOAD);
+      window.backend.ajax(renderPins, window.backend.onError, METHOD_DOWNLOAD, URL_DOWNLOAD);
     }
   };
 
@@ -106,5 +127,10 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+
+  window.map = {
+    setInactiveMode: setInactiveMode,
+  };
 
 })();

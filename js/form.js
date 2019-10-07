@@ -13,6 +13,9 @@
   var timeOutSelect = adForm.querySelector('#timeout');
   var addressInput = adForm.querySelector('input[name=address]');
 
+  var METHOD_UPLOAD = 'POST';
+  var URL_UPLOAD = 'https://js.dump.academy/keksobooking';
+
 
   // Checking capacity
   var checkCapacity = function () {
@@ -59,6 +62,13 @@
   timeOutSelect.addEventListener('change', function () {
     timeInSelect.value = timeOutSelect.value;
   });
+
+
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.ajax(window.map.setInactiveMode, window.backend.onError, METHOD_UPLOAD, URL_UPLOAD, new FormData(adForm));
+  });
+
 
   window.form = {
     filterForm: filterForm,
