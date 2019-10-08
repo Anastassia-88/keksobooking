@@ -9,7 +9,6 @@
   var map = window.data.map;
 
 
-
   function deleteCard() {
     var card = map.querySelector('.map__card');
     if (card) {
