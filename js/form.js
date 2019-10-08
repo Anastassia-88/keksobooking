@@ -17,26 +17,6 @@
   var URL_UPLOAD = 'https://js.dump.academy/keksobooking';
 
 
-  // Checking capacity
-  var checkCapacity = function () {
-    var guestsNumberOptions = guestsNumberSelect.querySelectorAll('option');
-    var roomsNumber = parseInt(window.util.getSelectedOption(roomsNumberSelect), 10);
-
-    for (var i = 0; i < guestsNumberOptions.length; i++) {
-      var guestsNumber = guestsNumberOptions[i];
-
-      if (roomsNumber >= parseInt(guestsNumber.value, 10) && (roomsNumber !== 100) && parseInt(guestsNumber.value, 10) !== 0) {
-        guestsNumber.disabled = false;
-      } else if (roomsNumber === 100 && parseInt(guestsNumber.value, 10) === 0) {
-        guestsNumber.disabled = false;
-        guestsNumber.selected = true;
-      } else {
-        guestsNumber.disabled = true;
-        guestsNumber.selected = false;
-      }
-    }
-  };
-
   roomsNumberSelect.addEventListener('change', function () {
     checkCapacity();
   });
@@ -44,7 +24,6 @@
   guestsNumberSelect.addEventListener('change', function () {
     checkCapacity();
   });
-
 
   // Connecting accomodation type and min price
   typeSelect.addEventListener('change', function () {
@@ -66,8 +45,33 @@
 
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.ajax(window.map.setInactiveMode, window.backend.onError, METHOD_UPLOAD, URL_UPLOAD, new FormData(adForm));
+    window.backend.ajax(onSuccessfulFormSubmission, window.error.showErrorMessage, METHOD_UPLOAD, URL_UPLOAD, new FormData(adForm));
   });
+
+
+  function checkCapacity() {
+    var guestsNumberOptions = guestsNumberSelect.querySelectorAll('option');
+    var roomsNumber = parseInt(window.util.getSelectedOption(roomsNumberSelect), 10);
+
+    for (var i = 0; i < guestsNumberOptions.length; i++) {
+      var guestsNumber = guestsNumberOptions[i];
+
+      if (roomsNumber >= parseInt(guestsNumber.value, 10) && (roomsNumber !== 100) && parseInt(guestsNumber.value, 10) !== 0) {
+        guestsNumber.disabled = false;
+      } else if (roomsNumber === 100 && parseInt(guestsNumber.value, 10) === 0) {
+        guestsNumber.disabled = false;
+        guestsNumber.selected = true;
+      } else {
+        guestsNumber.disabled = true;
+        guestsNumber.selected = false;
+      }
+    }
+  }
+
+  function onSuccessfulFormSubmission() {
+    window.map.setInactiveMode();
+    window.success.showSuccessMessage();
+  }
 
 
   window.form = {

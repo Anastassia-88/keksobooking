@@ -131,7 +131,7 @@
       window.util.switchFormElement(window.form.adForm, false);
       map.classList.remove('map--faded');
       window.form.adForm.classList.remove('ad-form--disabled');
-      window.backend.ajax(renderPins, window.backend.onError, METHOD_DOWNLOAD, URL_DOWNLOAD);
+      window.backend.ajax(renderPins, window.error.showErrorMessage, METHOD_DOWNLOAD, URL_DOWNLOAD);
     }
   }
 

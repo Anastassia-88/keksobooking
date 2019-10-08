@@ -64,19 +64,13 @@
     newCard.querySelector('.popup__avatar').src = accommodation.author.avatar;
 
 
-    // Close card
     var cardClose = newCard.querySelector('.popup__close');
-
-    cardClose.addEventListener('click', function () {
-      deleteCard();
-    });
-
-    cardClose.addEventListener('keydown', function (evt) {
+    cardClose.addEventListener('click', deleteCard);
+    document.addEventListener('keydown', function (evt) {
       window.util.isEnterEvent(evt, deleteCard);
     });
 
 
-    // Insert card
     map.insertBefore(newCard, map.querySelector('.map__filters-container'));
   }
 
