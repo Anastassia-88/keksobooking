@@ -16,7 +16,7 @@
   var ACCOMMODATIONS_AMOUNT = 5;
 
 
-  var renderPins = function (accommodations) {
+  function renderPins(accommodations) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < ACCOMMODATIONS_AMOUNT; i++) {
       if (accommodations[i].offer) {
@@ -24,18 +24,18 @@
       }
     }
     mapPinsContainer.appendChild(fragment);
-  };
+  }
 
 
-  var deletePins = function () {
+  function deletePins() {
     var pins = mapPinsContainer.querySelectorAll('.map__pin:not(.map__pin--main)');
     pins.forEach(function (pin) {
       pin.remove();
     });
-  };
+  }
 
 
-  var getAddress = function () {
+  function getAddress() {
     var pinX = mainPin.style.left;
     var pinY = mainPin.style.top;
     var addressX = parseInt(pinX, 10) + MAIN_PIN_WIDTH / 2;
@@ -47,13 +47,22 @@
       addressY = parseInt(pinY, 10) + MAIN_PIN_HEIGHT_ACTIVE;
     }
     window.form.addressInput.value = Math.floor(addressX) + ', ' + Math.floor(addressY);
-  };
+  }
+  //
+  // function getMainPinPosition() {
+  //   var offsetY = map.classList.contains('map--faded') ? mainPinOffsetYPassive : mainPinOffsetYActive;
+  //   var position = {
+  //     'x': mainPin.offsetLeft + mainPinOffsetX,
+  //     'y': mainPin.offsetTop + offsetY,
+  //   };
+  //   return position;
+  // }
 
 
-  var setInactiveMode = function () {
+  function setInactiveMode() {
     window.form.filterForm.reset();
     window.form.adForm.reset();
-    //window.card.deleteCard();
+    window.card.deleteCard();
     deletePins();
     //mainPin.style.left = '';
     //mainPin.style.top = '';
@@ -63,11 +72,11 @@
     window.form.adForm.classList.add('ad-form--disabled');
     getAddress();
 
-  };
+  }
 
   setInactiveMode();
 
-  var setActiveMode = function () {
+  function setActiveMode() {
     if (map.classList.contains('map--faded')) {
       window.util.switchFormElement(window.form.filterForm, false);
       window.util.switchFormElement(window.form.adForm, false);
@@ -75,7 +84,7 @@
       window.form.adForm.classList.remove('ad-form--disabled');
       window.backend.ajax(renderPins, window.backend.onError, METHOD_DOWNLOAD, URL_DOWNLOAD);
     }
-  };
+  }
 
 
   // Moving the main pin
@@ -88,7 +97,7 @@
       y: evt.clientY
     };
 
-    var onMouseMove = function (moveEvt) {
+    function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
 
       var shift = {
@@ -115,14 +124,14 @@
       }
 
       getAddress();
-    };
+    }
 
-    var onMouseUp = function (upEvt) {
+    function onMouseUp(upEvt) {
       upEvt.preventDefault();
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-    };
+    }
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);

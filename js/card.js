@@ -9,24 +9,25 @@
   var map = window.data.map;
 
 
-  var deleteCard = function () {
+
+  function deleteCard() {
     var card = map.querySelector('.map__card');
     if (card) {
       card.remove();
       document.removeEventListener('keydown', onPopupEscPress);
     }
-  };
+  }
 
 
-  var onPopupEscPress = function (evt) {
+  function onPopupEscPress(evt) {
     window.util.isEscEvent(evt, deleteCard);
-  };
+  }
 
 
-  var renderCard = function (accommodation) {
+  function renderCard(accommodation) {
     var newCard = cardTemplate.cloneNode(true);
 
-    var getFeatures = function (features) {
+    function getFeatures(features) {
       var featuresContainer = newCard.querySelector('.popup__features');
       var featuresCollection = newCard.querySelectorAll('.popup__feature');
 
@@ -35,9 +36,9 @@
           featuresContainer.removeChild(featuresCollection[i]);
         }
       }
-    };
+    }
 
-    var getPhotos = function (photos) {
+    function getPhotos(photos) {
       var photoContainer = newCard.querySelector('.popup__photos');
       var photoTemplate = newCard.querySelector('.popup__photo');
       photoContainer.removeChild(photoTemplate);
@@ -46,7 +47,7 @@
         photo.src = photos[i];
         photoContainer.appendChild(photo);
       }
-    };
+    }
 
 
     // Fill card
@@ -78,7 +79,7 @@
 
     // Insert card
     map.insertBefore(newCard, map.querySelector('.map__filters-container'));
-  };
+  }
 
 
   window.card = {
