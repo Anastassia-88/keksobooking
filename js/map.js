@@ -10,49 +10,14 @@
   var MAIN_PIN_HEIGHT_INACTIVE = 65;
   var MAIN_PIN_HEIGHT_ACTIVE = 87;
 
+  var METHOD_DOWNLOAD = 'GET';
+  var URL_DOWNLOAD = 'https://js.dump.academy/keksobooking/data';
 
-  // Render pins
-  var renderPins = function (accommodations) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < accommodations.length; i++) {
-      fragment.appendChild(window.pin.renderPin(accommodations[i]));
-    }
-    mapPinsContainer.appendChild(fragment);
-  };
+  var ACCOMMODATIONS_AMOUNT = 5;
 
 
-  // Getting address
-  var getAddress = function () {
-    var pinX = mainPin.style.left;
-    var pinY = mainPin.style.top;
-    var addressX = parseInt(pinX, 10) + MAIN_PIN_WIDTH / 2;
-    var addressY;
-
-    if (map.classList.contains('map--faded')) { // Inactive mode
-      addressY = parseInt(pinY, 10) + MAIN_PIN_HEIGHT_INACTIVE / 2;
-    } else { // Active mode
-      addressY = parseInt(pinY, 10) + MAIN_PIN_HEIGHT_ACTIVE;
-    }
-    window.form.addressInput.value = Math.floor(addressX) + ', ' + Math.floor(addressY);
-  };
-
-
-  // Inactive (start) mode
-  window.util.switchFormElement(window.form.filterForm, true);
-  window.util.switchFormElement(window.form.adForm, true);
-  getAddress();
-
-  // Active mode
-  var setActiveMode = function () {
-    if (map.classList.contains('map--faded')) {
-      window.util.switchFormElement(window.form.filterForm, false);
-      window.util.switchFormElement(window.form.adForm, false);
-      map.classList.remove('map--faded');
-      window.form.adForm.classList.remove('ad-form--disabled');
-      renderPins(window.data.accommodations);
-    }
-  };
-
+  var mainPinDefaultPosition = getMainPinDefaultPosition();
+  setInactiveMode();
 
   // Moving the main pin
   mainPin.addEventListener('mousedown', function (evt) {
@@ -64,7 +29,7 @@
       y: evt.clientY
     };
 
-    var onMouseMove = function (moveEvt) {
+    function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
 
       var shift = {
@@ -91,17 +56,87 @@
       }
 
       getAddress();
-    };
+    }
 
-    var onMouseUp = function (upEvt) {
+    function onMouseUp(upEvt) {
       upEvt.preventDefault();
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-    };
+    }
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  function renderPins(accommodations) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < ACCOMMODATIONS_AMOUNT; i++) {
+      if (accommodations[i].offer) {
+        fragment.appendChild(window.pin.createPin(accommodations[i]));
+      }
+    }
+    mapPinsContainer.appendChild(fragment);
+  }
+
+  function deletePins() {
+    var pins = mapPinsContainer.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (pin) {
+      pin.remove();
+    });
+  }
+
+  function getAddress() {
+    var pinX = mainPin.style.left;
+    var pinY = mainPin.style.top;
+    var addressX = parseInt(pinX, 10) + MAIN_PIN_WIDTH / 2;
+    var addressY;
+
+    if (map.classList.contains('map--faded')) { // Inactive mode
+      addressY = parseInt(pinY, 10) + MAIN_PIN_HEIGHT_INACTIVE / 2;
+    } else { // Active mode
+      addressY = parseInt(pinY, 10) + MAIN_PIN_HEIGHT_ACTIVE;
+    }
+    window.form.addressInput.value = Math.floor(addressX) + ', ' + Math.floor(addressY);
+  }
+
+  function getMainPinDefaultPosition() {
+    return {
+      x: mainPin.offsetLeft,
+      y: mainPin.offsetTop
+    };
+  }
+
+  function setMainPinDefaultPosition() {
+    mainPin.style.left = mainPinDefaultPosition.x + 'px';
+    mainPin.style.top = mainPinDefaultPosition.y + 'px';
+  }
+
+  function setInactiveMode() {
+    setMainPinDefaultPosition();
+    window.form.filterForm.reset();
+    window.form.adForm.reset();
+    window.card.deleteCard();
+    deletePins();
+    window.util.switchFormElement(window.form.filterForm, true);
+    window.util.switchFormElement(window.form.adForm, true);
+    map.classList.add('map--faded');
+    window.form.adForm.classList.add('ad-form--disabled');
+    getAddress();
+  }
+
+  function setActiveMode() {
+    if (map.classList.contains('map--faded')) {
+      window.util.switchFormElement(window.form.filterForm, false);
+      window.util.switchFormElement(window.form.adForm, false);
+      map.classList.remove('map--faded');
+      window.form.adForm.classList.remove('ad-form--disabled');
+      window.backend.ajax(renderPins, window.error.showErrorMessage, METHOD_DOWNLOAD, URL_DOWNLOAD);
+    }
+  }
+
+  window.map = {
+    setInactiveMode: setInactiveMode,
+  };
 
 })();
