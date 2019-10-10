@@ -27,7 +27,7 @@
 
   // Connecting accomodation type and min price
   typeSelect.addEventListener('change', function () {
-    var key = window.util.getSelectedOption(typeSelect);
+    var key = window.util.getSelectedOptionValue(typeSelect);
     priceInput.min = window.data.ACCOMMODATION_TYPE_NAME[key].minPrice;
     priceInput.placeholder = window.data.ACCOMMODATION_TYPE_NAME[key].minPrice;
   });
@@ -51,7 +51,7 @@
 
   function checkCapacity() {
     var guestsNumberOptions = guestsNumberSelect.querySelectorAll('option');
-    var roomsNumber = parseInt(window.util.getSelectedOption(roomsNumberSelect), 10);
+    var roomsNumber = parseInt(window.util.getSelectedOptionValue(roomsNumberSelect), 10);
 
     for (var i = 0; i < guestsNumberOptions.length; i++) {
       var guestsNumber = guestsNumberOptions[i];
