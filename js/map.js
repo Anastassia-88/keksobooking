@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var accommodations = [];
 
   var map = window.data.map;
   var mainPin = map.querySelector('.map__pin--main');
@@ -15,6 +16,12 @@
 
   var ACCOMMODATIONS_AMOUNT = 5;
 
+  var adForm = window.form.filterForm;
+  var typeFilter = adForm.querySelector('#housing-type');
+
+  typeFilter.addEventListener('change', function () {
+    updatePins();
+  });
 
   var mainPinDefaultPosition = getMainPinDefaultPosition();
   setInactiveMode();
@@ -69,15 +76,26 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  function renderPins(accommodations) {
+  function renderPins(newAccommodations) {
+    window.util.removeNodeContent(mapPinsContainer);
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < ACCOMMODATIONS_AMOUNT; i++) {
-      if (accommodations[i].offer) {
-        fragment.appendChild(window.pin.createPin(accommodations[i]));
-      }
+    for (var i = 0; i < ACCOMMODATIONS_AMOUNT && i < newAccommodations.length; i++) {
+      fragment.appendChild(window.pin.createPin(newAccommodations[i]));
     }
     mapPinsContainer.appendChild(fragment);
   }
+
+  function updatePins() {
+    var filteredAccommodations = accommodations;
+
+    if (window.util.getSelectedOptionValue(typeFilter) !== 'any') {
+      filteredAccommodations = accommodations.filter(function (it) {
+        return (it.offer.type === window.util.getSelectedOptionValue(typeFilter));
+      });
+    }
+    renderPins(filteredAccommodations);
+  }
+
 
   function deletePins() {
     var pins = mapPinsContainer.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -131,8 +149,13 @@
       window.util.switchFormElement(window.form.adForm, false);
       map.classList.remove('map--faded');
       window.form.adForm.classList.remove('ad-form--disabled');
-      window.backend.ajax(renderPins, window.error.showErrorMessage, METHOD_DOWNLOAD, URL_DOWNLOAD);
+      window.backend.ajax(onSuccess, window.error.showErrorMessage, METHOD_DOWNLOAD, URL_DOWNLOAD);
     }
+  }
+
+  function onSuccess(data) {
+    accommodations = data;
+    updatePins();
   }
 
   window.map = {

@@ -47,6 +47,12 @@
     }
   }
 
+  function removeNodeContent(node) {
+    while (node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+  }
+
   window.util = {
     getRandomIntInclusive: getRandomIntInclusive,
     getRandomItemFromArray: getRandomItemFromArray,
@@ -55,6 +61,7 @@
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent,
     switchFormElement: switchFormElement,
+    removeNodeContent: removeNodeContent,
   };
 
 })();
