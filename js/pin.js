@@ -1,12 +1,13 @@
 'use strict';
 
 (function () {
+
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  var createPin = function (accommodation) {
+  function createPin(accommodation) {
     var pin = pinTemplate.cloneNode(true);
     pin.querySelector('img').src = accommodation.author.avatar;
     pin.querySelector('img').alt = accommodation.offer.description;
@@ -27,11 +28,10 @@
       window.util.isEnterEvent(evt, changeCard);
     });
     return pin;
-  };
+  }
 
   window.pin = {
     createPin: createPin,
   };
-
 
 })();
