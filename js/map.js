@@ -18,13 +18,19 @@
 
   var adForm = window.form.filterForm;
   var typeFilter = adForm.querySelector('#housing-type');
-
-  typeFilter.addEventListener('change', function () {
-    updatePins();
-  });
+  var priceFilter = adForm.querySelector('#housing-price');
+  var roomsNumberFilter = adForm.querySelector('#housing-rooms');
+  var guestsNumberFilter = adForm.querySelector('#housing-guests');
 
   var mainPinDefaultPosition = getMainPinDefaultPosition();
+
   setInactiveMode();
+
+  onFilterChange(typeFilter);
+  onFilterChange(priceFilter);
+  onFilterChange(roomsNumberFilter);
+  onFilterChange(guestsNumberFilter);
+
 
   // Moving the main pin
   mainPin.addEventListener('mousedown', function (evt) {
@@ -75,6 +81,14 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+
+  function onFilterChange(select) {
+    select.addEventListener('change', function () {
+      updatePins();
+    });
+  }
+
 
   function renderPins(newAccommodations) {
     window.util.removeNodeContent(mapPinsContainer);
