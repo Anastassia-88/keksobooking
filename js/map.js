@@ -16,11 +16,11 @@
 
   var ACCOMMODATIONS_AMOUNT = 5;
 
-  var adForm = window.form.filterForm;
-  var typeFilter = adForm.querySelector('#housing-type');
-  var priceFilter = adForm.querySelector('#housing-price');
-  var roomsNumberFilter = adForm.querySelector('#housing-rooms');
-  var guestsNumberFilter = adForm.querySelector('#housing-guests');
+  var filterForm = window.form.filterForm;
+  var typeFilter = filterForm.querySelector('#housing-type');
+  var priceFilter = filterForm.querySelector('#housing-price');
+  var roomsNumberFilter = filterForm.querySelector('#housing-rooms');
+  var guestsNumberFilter = filterForm.querySelector('#housing-guests');
 
   var mainPinDefaultPosition = getMainPinDefaultPosition();
 
@@ -85,13 +85,12 @@
 
   function onFilterChange(select) {
     select.addEventListener('change', function () {
-      updatePins();
+      updatePins(accommodations);
     });
   }
 
 
   function renderPins(newAccommodations) {
-    window.util.removeNodeContent(mapPinsContainer);
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < ACCOMMODATIONS_AMOUNT && i < newAccommodations.length; i++) {
       fragment.appendChild(window.pin.createPin(newAccommodations[i]));
@@ -99,14 +98,23 @@
     mapPinsContainer.appendChild(fragment);
   }
 
-  function updatePins() {
-    var filteredAccommodations = accommodations;
+  function updatePins(newAccommodations) {
+    window.util.removeNodeContent(mapPinsContainer);
 
-    if (window.util.getSelectedOptionValue(typeFilter) !== 'any') {
-      filteredAccommodations = accommodations.filter(function (it) {
-        return (it.offer.type === window.util.getSelectedOptionValue(typeFilter));
-      });
-    }
+    var filteredAccommodations = newAccommodations.filter(function (it) {
+
+      var type = window.util.getSelectedOptionValue(typeFilter);
+      var price = window.util.getSelectedOptionValue(priceFilter);
+      var roomsNumber = window.util.getSelectedOptionValue(roomsNumberFilter);
+      var guestsNumber = window.util.getSelectedOptionValue(guestsNumberFilter);
+
+      var isTypeRequired = (type === 'any') ? true : (it.offer.type === type);
+      var isPriceRequired = (price === 'any') ? true : (it.offer.price === price);
+      var isRoomsNumberRequired = (roomsNumber === 'any') ? true : (it.offer.roomsNumber === parseInt(roomsNumber, 10));
+      var isGuestsNumberRequired = (guestsNumber === 'any') ? true : (it.offer.guestsNumber === parseInt(guestsNumber, 10));
+
+      return isTypeRequired && isPriceRequired && isRoomsNumberRequired && isGuestsNumberRequired;
+    });
     renderPins(filteredAccommodations);
   }
 
@@ -169,7 +177,7 @@
 
   function onSuccess(data) {
     accommodations = data;
-    updatePins();
+    updatePins(accommodations);
   }
 
   window.map = {
