@@ -47,7 +47,7 @@
   }
 
 
-  function updatePins(accommodations) {
+  var updatePins = window.debounce(function (accommodations) {
     window.util.removeNodeContent(window.map.mapPinsContainer);
     window.card.deleteCard();
 
@@ -66,6 +66,8 @@
     });
     window.map.renderPins(filteredPins);
   }
+  );
+
 
   window.filter = {
     updatePins: updatePins,
