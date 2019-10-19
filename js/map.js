@@ -16,15 +16,14 @@
 
   var ACCOMMODATIONS_AMOUNT = 5;
 
-  var adForm = window.form.filterForm;
-  var typeFilter = adForm.querySelector('#housing-type');
-
-  typeFilter.addEventListener('change', function () {
-    updatePins();
-  });
+  var filterForm = window.form.filterForm;
 
   var mainPinDefaultPosition = getMainPinDefaultPosition();
+
   setInactiveMode();
+
+  onFilterChange(filterForm);
+
 
   // Moving the main pin
   mainPin.addEventListener('mousedown', function (evt) {
@@ -76,24 +75,20 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
+
+  function onFilterChange(form) {
+    form.addEventListener('change', function () {
+      window.filter.updatePins(accommodations);
+    });
+  }
+
+
   function renderPins(newAccommodations) {
-    window.util.removeNodeContent(mapPinsContainer);
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < ACCOMMODATIONS_AMOUNT && i < newAccommodations.length; i++) {
       fragment.appendChild(window.pin.createPin(newAccommodations[i]));
     }
     mapPinsContainer.appendChild(fragment);
-  }
-
-  function updatePins() {
-    var filteredAccommodations = accommodations;
-
-    if (window.util.getSelectedOptionValue(typeFilter) !== 'any') {
-      filteredAccommodations = accommodations.filter(function (it) {
-        return (it.offer.type === window.util.getSelectedOptionValue(typeFilter));
-      });
-    }
-    renderPins(filteredAccommodations);
   }
 
 
@@ -155,11 +150,13 @@
 
   function onSuccess(data) {
     accommodations = data;
-    updatePins();
+    window.filter.updatePins(accommodations);
   }
 
   window.map = {
     setInactiveMode: setInactiveMode,
+    renderPins: renderPins,
+    mapPinsContainer: mapPinsContainer,
   };
 
 })();

@@ -53,6 +53,16 @@
     }
   }
 
+  function isArrayInclude(where, what) {
+    var isInclude = true;
+    for (var i = 0; i < what.length; i++) {
+      if (!(where.includes(what[i]))) {
+        isInclude = false;
+      }
+    }
+    return isInclude;
+  }
+
   window.util = {
     getRandomIntInclusive: getRandomIntInclusive,
     getRandomItemFromArray: getRandomItemFromArray,
@@ -62,6 +72,7 @@
     isEnterEvent: isEnterEvent,
     switchFormElement: switchFormElement,
     removeNodeContent: removeNodeContent,
+    isArrayInclude: isArrayInclude,
   };
 
 })();
